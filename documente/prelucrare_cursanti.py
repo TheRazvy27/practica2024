@@ -32,7 +32,9 @@ def test():
 #                    print(id, " a fost sters cu succes!")
 
 def stergere_v2(id):
-    for filename in glob.glob("C:/Users/c8ilu/documente/*.txt"):
+    dict_stergere = dict()
+    lista_stergere = []
+    for filename in glob.glob("C:/Users/c8ilu/practica2024/documente/*.txt"):
         file = open(filename, "r")
         my_file = file.readlines()
         file.close()
@@ -41,11 +43,23 @@ def stergere_v2(id):
             linie = line.split(' ')
             #print(linie)
             if linie[0] == id:
-                print(line.rstrip(), " a fost sters.")
+                print(line.rstrip(), " din fisierul ", filename, " a fost sters.")
             else:
                 file.write(line)
-
-
+    for filename in glob.glob("C:/Users/c8ilu/practica2024/documente/*.csv"):
+        with open(filename, newline = '') as csvfile:
+            csvreader = csv.reader(csvfile)
+            for row in csvreader:
+                if row[0] == id:
+                    continue
+                dict_stergere = {"ID": row[0], "Nume": row[1], "Prenume": row[2], "CNP": row[3]}
+                lista_stergere.append(dict_stergere)
+                #print (dict_stergere)
+        csvfile.close()
+        with open(filename, mode = "w", newline = '') as csvfile:
+            filewriter = csv.writer(csvfile)
+            for ceva in lista_stergere:
+                filewriter.writerow([ceva['ID'], ceva['Nume'], ceva['Prenume'], ceva['CNP']])
 
 def prelucrare_date_citite(data):
     with open("id.md", "r") as my_file:
@@ -111,7 +125,7 @@ def salveaza_date(format_fisier):
     if format_fisier == "csv":
         with open(strftime("Lista_cursanti_%Y_%B_%d_%H_%M.csv"), mode = "w", newline = '') as csvfile:
             filewriter = csv.writer(csvfile)
-            filewriter.writerow(['ID', 'Nume',  'Prenume',  'CNP'])
+            filewriter.writerow(['ID', 'Nume', 'Prenume', 'CNP'])
 #        with open(strftime("Lista_cursanti_%Y_%B_%d_%H_%M.csv"), mode = 'a', newline = '') as csvfile:
             for cursant in lista_cursanti:
                 filewriter.writerow([cursant['id'], cursant['nume'], cursant['prenume'], cursant['cnp']])
