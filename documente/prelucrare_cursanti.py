@@ -5,6 +5,7 @@
 # 3. Incarcarea datelor dintr-un fisier de cursanti in cadrul listei cu eliminarea duplicatelor.
 from time import strftime
 import glob
+import csv
 
 def test():
     for filename in glob.glob("C:/Users/c8ilu/documente/*.txt"):
@@ -108,11 +109,12 @@ def salveaza_date(format_fisier):
                 my_file.write(f'{cursant['id']} \t{cursant['nume']}\t{cursant['prenume']}\t{cursant['cnp']}\n')
         print(f'Fisierul {strftime("Lista_cursanti_%Y_%B_%d_%H_%M.txt")} a fost salvat cu success.')
     if format_fisier == "csv":
-        with open(strftime("Lista_cursanti_%Y_%B_%d_%H_%M.csv"), mode = "w") as my_file:
-            my_file.write("Nume \n Prenume \n CNP")
-        with open(strftime("Lista_cursanti_%Y_%B_%d_%H_%M.csv"), mode = 'a') as my_file:
+        with open(strftime("Lista_cursanti_%Y_%B_%d_%H_%M.csv"), mode = "w", newline = '') as csvfile:
+            filewriter = csv.writer(csvfile)
+            filewriter.writerow(['ID', 'Nume',  'Prenume',  'CNP'])
+#        with open(strftime("Lista_cursanti_%Y_%B_%d_%H_%M.csv"), mode = 'a', newline = '') as csvfile:
             for cursant in lista_cursanti:
-                my_file.write(cursant['nume'] + '\n' + cursant['prenume'] + "\n" + cursant['cnp'])
+                filewriter.writerow([cursant['id'], cursant['nume'], cursant['prenume'], cursant['cnp']])
         print(f'Fisierul {strftime("Lista_cursanti_%Y_%B_%d_%H_%M.csv")} a fost salvat cu success.')             
 
 
