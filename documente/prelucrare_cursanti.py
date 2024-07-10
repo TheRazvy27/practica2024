@@ -41,7 +41,7 @@ def stergere_v2(id):
         with open(filename, mode = "w", newline = '') as csvfile:
             filewriter = csv.writer(csvfile)
             for ceva in lista_stergere:
-                filewriter.writerow([ceva['ID'], ceva['Nume'], ceva['Prenume'], ceva['CNP']])
+                filewriter.writerow([ceva['ID'], ceva['Nume'], ceva['Prenume'], ceva['CNP']])                
 
 def prelucrare_date_citite(data):
     with open("id.md", "r") as my_file:
@@ -56,6 +56,29 @@ def prelucrare_date_citite(data):
     if len(data) == 4:
         prenume = data[1] + " " + data[2]
         cnp = data[3]
+    global lista_cursanti
+    for cursant in lista_cursanti:
+        if cursant['cnp'] == cnp:
+            print("Duplicat detectat!")
+            return False
+    for filename in glob.glob("C:/Users/c8ilu/practica2024/documente/*.txt"):
+        file = open(filename, "r")
+        my_file = file.readlines()
+        file.close()
+        file = open(filename, "w")
+        for line in my_file:
+            linie = line.split(' ')
+            #print(linie)
+            if linie[2] == cnp:
+                print("Duplicat detectat in ", filename)
+                return False
+    for filename in glob.glob("C:/Users/c8ilu/practica2024/documente/*.csv"):
+        with open(filename, newline = '') as csvfile:
+            csvreader = csv.reader(csvfile)
+            for row in csvreader:
+                if row[3] == cnp:
+                    print("Duplicat detectat in ", filename)
+                    return False          
     with open("id.md", mode = "w") as my_file:
         increment = int(id)
         increment += 1
