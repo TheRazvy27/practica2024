@@ -12,25 +12,6 @@ def test():
         print(filename)
         open(filename)
 
-#def stergere(id):
-#    for filename in glob.glob("C:/Users/c8ilu/documente/*.txt"):
-#        with open(filename, mode = "r") as my_file:
-#            for lines in my_file:
-#                if(f'{id} ') in lines:
-#                    print(f'ID-ul {id} a fost sters')
-#                    continue
-#                my_file.write(lines)
-
-#def stergere_id(id):
-#    for filename in glob.glob('documente/*.txt'):
-#        with open(filename, mode = "r") as my_file:
-#            lines = my_file.readlines()
-#        with open(filename, mode = "w") as my_file:
-#            for line in lines:
-#                if line.rstrip() != id:
-#                    my_file.write(line)
-#                    print(id, " a fost sters cu succes!")
-
 def stergere_v2(id):
     dict_stergere = dict()
     lista_stergere = []
@@ -42,15 +23,16 @@ def stergere_v2(id):
         for line in my_file:
             linie = line.split(' ')
             #print(linie)
-            if linie[0] == id:
-                print(line.rstrip(), " din fisierul ", filename, " a fost sters.")
+            if linie[0] == id or linie[2] == id:
+                print(line.rstrip(), " din fisierul ", filename, " a fost sters cu succes!")
             else:
                 file.write(line)
     for filename in glob.glob("C:/Users/c8ilu/practica2024/documente/*.csv"):
         with open(filename, newline = '') as csvfile:
             csvreader = csv.reader(csvfile)
             for row in csvreader:
-                if row[0] == id:
+                if row[0] == id or row[3] == id:
+                    print(row, " din fisierul ", filename, " a fost sters cu succes!")
                     continue
                 dict_stergere = {"ID": row[0], "Nume": row[1], "Prenume": row[2], "CNP": row[3]}
                 lista_stergere.append(dict_stergere)
@@ -120,13 +102,12 @@ def salveaza_date(format_fisier):
             my_file.write("ID \t Nume \t Prenume \t CNP \n")
         with open(strftime("Lista_cursanti_%Y_%B_%d_%H_%M.txt"), mode = "a") as my_file:
             for cursant in lista_cursanti:
-                my_file.write(f'{cursant['id']} \t{cursant['nume']}\t{cursant['prenume']}\t{cursant['cnp']}\n')
+                my_file.write(f'{cursant['id']} \t{cursant['nume']}\t{cursant['prenume']}\t {cursant['cnp']} .\n')
         print(f'Fisierul {strftime("Lista_cursanti_%Y_%B_%d_%H_%M.txt")} a fost salvat cu success.')
     if format_fisier == "csv":
         with open(strftime("Lista_cursanti_%Y_%B_%d_%H_%M.csv"), mode = "w", newline = '') as csvfile:
             filewriter = csv.writer(csvfile)
             filewriter.writerow(['ID', 'Nume', 'Prenume', 'CNP'])
-#        with open(strftime("Lista_cursanti_%Y_%B_%d_%H_%M.csv"), mode = 'a', newline = '') as csvfile:
             for cursant in lista_cursanti:
                 filewriter.writerow([cursant['id'], cursant['nume'], cursant['prenume'], cursant['cnp']])
         print(f'Fisierul {strftime("Lista_cursanti_%Y_%B_%d_%H_%M.csv")} a fost salvat cu success.')             
@@ -138,18 +119,24 @@ if __name__ == "__main__":
  #   test()
     while True:
         dict_cursant = dict()
-        new_line = input("Introduceti un nou cursant sau introduceti EXIT sau SAVE.")
+        new_line = input("Introduceti un nou cursant sau introduceti DELETE, EXIT sau SAVE. ")
         if new_line == "EXIT":
             print("Programul se inchide")
             break
         if new_line == "SAVE":
-            format_fisier = input("In ce format doriti salvarea datelor? txt/csv?").lower()
+            format_fisier = input("In ce format doriti salvarea datelor? txt/csv? ").lower()
             salveaza_date(format_fisier)
             continue
         if new_line == "DELETE":
-            delete = input("Introduceti ID-ul pe care doriti sa il stergeti: ")
-            stergere_v2(delete)
-            continue
+            aleg = input("Cum doriti sa efectuati stergerea? ID/CNP ")
+            if aleg == "ID":
+                delete = input("Introduceti ID-ul pe care doriti sa il stergeti: ")
+                stergere_v2(delete)
+                continue
+            if aleg == "CNP":
+                delete = input("Introduceti CNP-ul pe care doriti sa il stergeti: ")
+                stergere_v2(delete)
+                continue
         date_cursant = new_line.split()
         rezultat = prelucrare_date_citite(date_cursant)
         if not rezultat:
